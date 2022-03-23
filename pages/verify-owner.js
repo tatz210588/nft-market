@@ -9,6 +9,7 @@ import { ethers } from 'ethers'
 import BigNumber from "bignumber.js";
 import { ellipseAddress } from '../components/utils';
 import BeatLoader from "react-spinners/BeatLoader";
+import RingLoader from "react-spinners/RingLoader"
 
 
 const style = {
@@ -23,6 +24,7 @@ const style = {
     midRow: `text-white`,
     description: `text-[#fff] container-[400px] text-2xl mt-[0.8rem] mb-[2.5rem]`,
     ctaContainer: `flex`,
+    spinner: `w-full h-screen flex justify-center text-white mt-20 p-100 object-center`,
     accentedButton: ` relative text-lg font-semibold px-12 py-4 bg-[#2181e2] rounded-lg mr-5 text-white hover:bg-[#42a0ff] cursor-pointer`,
     button: ` relative text-lg font-semibold px-12 py-4 bg-[#363840] rounded-lg mr-5 text-[#e4e8ea] hover:bg-[#4c505c] cursor-pointer`,
     nftButton: `font-bold w-full mt-4 bg-pink-500 text-white text-lg rounded p-4 shadow-lg hover:bg-[#19a857] cursor-pointer`,
@@ -32,65 +34,59 @@ const style = {
 
 
 
-const verifyOwner = () => {
+export default function verifyOwner() {
 
     const { address, chainId } = useWeb3();
     //const chainName = getNetworkMetadata(chainId).chainName;
     //const chainId = "80001"
+    //console.log(chainId)
     const [balance, setBalance] = useState(0);
     const [formInput, updateFormInput] = useState({ destination: '' })
     const [wallet, setWallet] = useState('');
-    const [selectedToken, setSelectedToken] = useState(getTokenByChain(chainId)[0])
+    const [selectedToken, setSelectedToken] = useState()
     const [loadingState, setLoadingState] = useState(false)
     const [circle, setCircle] = useState(false)
 
-    useEffect(() => {
+
+
+    async function loadNFTBalance() {
+        setLoadingState(false)
         const web3Modal = new Web3Modal({
             network: "mainnet",
             cacheProvider: true,
         })
         const connection = await web3Modal.connect()
         const provider = new ethers.providers.Web3Provider(connection)
-    },
 
-        async function loadNFTBalance() {
-            setLoadingState(false)
-            const web3Modal = new Web3Modal({
-                network: "mainnet",
-                cacheProvider: true,
-            })
-            const connection = await web3Modal.connect()
-            const provider = new ethers.providers.Web3Provider(connection)
-
-            if (selectedToken.address != "0x000" && formInput.destination != '') {
-                setCircle(true)
-                const tokenContract = new ethers.Contract(selectedToken.address, NFT.abi, provider)
-                let data;
-                if (formInput.destination === "this") {
-                    data = await tokenContract.balanceOf(address)
-                } else {
-                    setWallet(formInput.destination)
-                    data = await tokenContract.balanceOf(formInput.destination)
-                }
-                const pow = new BigNumber('10').pow(new BigNumber(selectedToken.decimal))
-                setBalance(web3BNToFloatString(data, pow, 0, BigNumber.ROUND_DOWN))
-                setCircle(false)
-                setLoadingState(true)
+        if (selectedToken.address != "0x000" && formInput.destination != '') {
+            setCircle(true)
+            const tokenContract = new ethers.Contract(selectedToken.address, NFT.abi, provider)
+            let data;
+            if (formInput.destination === "this") {
+                data = await tokenContract.balanceOf(address)
             } else {
-                alert("Enter Valid details please!!")
+                setWallet(formInput.destination)
+                data = await tokenContract.balanceOf(formInput.destination)
             }
+            const pow = new BigNumber('10').pow(new BigNumber(selectedToken.decimal))
+            setBalance(web3BNToFloatString(data, pow, 0, BigNumber.ROUND_DOWN))
+            setCircle(false)
+            setLoadingState(true)
+        } else {
+            alert("Enter Valid details please!!")
+        }
 
-        }
+    }
     function web3BNToFloatString(
-            bn,
-            divideBy,
-            decimals,
-            roundingMode = BigNumber.ROUND_DOWN
-        ) {
-            const converted = new BigNumber(bn.toString())
-            const divided = converted.div(divideBy)
-            return divided.toFixed(decimals, roundingMode)
-        }
+        bn,
+        divideBy,
+        decimals,
+        roundingMode = BigNumber.ROUND_DOWN
+    ) {
+        const converted = new BigNumber(bn.toString())
+        const divided = converted.div(divideBy)
+        return divided.toFixed(decimals, roundingMode)
+    }
 
     return (
         <div>
@@ -98,59 +94,65 @@ const verifyOwner = () => {
             <div className={style.wrapper}>
                 <div className={style.container}>
                     <div className={style.contentWrapper}>
+                        {!chainId ? (
+                            <div className={style.spinner}>
+                                <RingLoader className={style.spinner} color={'#ffffff'} size={50} />
+                                <p><b>Click on the "Connect Wallet" button !!</b></p>
 
-                        <div className={style.copyContainer}>
-                            <div className={`${style.title} mt-1 p-1`}>
-                                Verify Ownership of ERC20 Token or NFT !!
                             </div>
+                        ) : (
+                            <div className={style.copyContainer}>
+                                <div className={`${style.title} mt-1 p-1`}>
+                                    Validate Ownership of ERC20 Token or NFT !!
+                                </div>
 
-                            <div className={`mt-2 p-1`}>
-                                <select className={style.dropDown} onChange={(e) => {
-                                    setSelectedToken(getTokenByChain(chainId)[e.target.value])
-                                    setLoadingState(false)
-                                }}>
-                                    {getTokenByChain(chainId).map((token, index) => (
-                                        <option value={index} key={token.address}>{token.name}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className={`${style.searchBar} mt-2 p-1`}>
-                                <input className={style.searchInput}
-                                    placeholder='Enter Wallet Address'
-                                    onChange={e => {
-                                        updateFormInput({ ...formInput, destination: e.target.value })
+                                <div className={`mt-2 p-1`}>
+                                    <select className={style.dropDown} onChange={(e) => {
+                                        setSelectedToken(getTokenByChain(chainId)[e.target.value])
                                         setLoadingState(false)
-                                    }}
-                                />
-                            </div>
-
-
-
-                            {circle === true ? (
-                                <div className={style.midRow}>
-                                    <BeatLoader className={style.midRow} color={'#ffffff'} loading={circle} size={15} />
-                                    Verifying ownership on blockchain
+                                    }}>
+                                        {getTokenByChain(chainId).map((token, index) => (
+                                            <option value={index} key={token.address}>{token.name}</option>
+                                        ))}
+                                    </select>
                                 </div>
-                            ) : (
-                                <div>
-                                    {
-
-                                        <div >
-
-                                            <button onClick={() => { loadNFTBalance() }} className={style.nftButton}>Verify Ownership Now</button>
-                                        </div>
-
-                                    }
-
+                                <div className={`${style.searchBar} mt-2 p-1`}>
+                                    <input className={style.searchInput}
+                                        placeholder='Enter Wallet Address'
+                                        onChange={e => {
+                                            updateFormInput({ ...formInput, destination: e.target.value })
+                                            setLoadingState(false)
+                                        }}
+                                    />
                                 </div>
-                            )}
-                            {loadingState === true && (
-                                <div className={`${style.description} mt-4 p-1`}>
-                                    {formInput.destination === "this" ? ellipseAddress(address) : ellipseAddress(wallet)} is the proud owner of {balance} nos  {selectedToken.name}
-                                </div>
-                            )}
 
-                        </div>
+
+
+                                {circle === true ? (
+                                    <div className={style.midRow}>
+                                        <BeatLoader className={style.midRow} color={'#ffffff'} loading={circle} size={15} />
+                                        Validating ownership on blockchain
+                                    </div>
+                                ) : (
+                                    <div>
+                                        {
+
+                                            <div >
+
+                                                <button onClick={() => { loadNFTBalance() }} className={style.nftButton}>Validate Ownership Now</button>
+                                            </div>
+
+                                        }
+
+                                    </div>
+                                )}
+                                {loadingState === true && (
+                                    <div className={`${style.description} mt-4 p-1`}>
+                                        {formInput.destination === "this" ? ellipseAddress(address) : ellipseAddress(wallet)} is the proud owner of {balance} nos  {selectedToken.name}
+                                    </div>
+                                )}
+
+                            </div>)}
 
                     </div>
                 </div>
@@ -162,4 +164,4 @@ const verifyOwner = () => {
 
 }
 
-export default verifyOwner
+

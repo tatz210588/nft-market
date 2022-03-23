@@ -19,7 +19,8 @@ export default function Home() {
   const { address } = useWeb3()
   const welcomeMessage = !address ? "Connect Your Wallet" : `Welcome ${ellipseAddress(address)} !!`
 
-  useEffect(() => { toast.success(welcomeMessage) }, [address])
+
+  useEffect(() => { !address ? toast.error(welcomeMessage) : toast.success(welcomeMessage) }, [address])
 
 
   /*******************Send and save data to Sanity starts****************/

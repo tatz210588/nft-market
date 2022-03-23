@@ -26,6 +26,7 @@ const style = {
     midRow: `text-white`,
     description: `text-[#fff] container-[400px] text-2xl mt-[0.8rem] mb-[2.5rem]`,
     ctaContainer: `flex`,
+    spinner: `w-full h-screen flex justify-center text-white mt-20 p-100 object-center`,
     accentedButton: ` relative text-lg font-semibold px-12 py-4 bg-[#2181e2] rounded-lg mr-5 text-white hover:bg-[#42a0ff] cursor-pointer`,
     button: ` relative text-lg font-semibold px-12 py-4 bg-[#363840] rounded-lg mr-5 text-[#e4e8ea] hover:bg-[#4c505c] cursor-pointer`,
     nftButton: `font-bold w-full mt-4 bg-pink-500 text-white text-lg rounded p-4 shadow-lg hover:bg-[#19a857] cursor-pointer`,
@@ -110,50 +111,57 @@ export default function CreateItem() {
             <div className={style.wrapper}>
                 <div className={style.container}>
                     <div className={style.contentWrapper}>
+                        {!chainId ? (
+                            <div className={style.spinner}>
+                                <RingLoader className={style.spinner} color={'#ffffff'} size={50} />
+                                <p><b>Click on the "Connect Wallet" button !!</b></p>
 
-                        <div className={style.copyContainer}>
-                            <div className={`${style.title} mt-1 p-1`}>
-                                Create Your NFT !!
                             </div>
+                        ) : (
+                            <div className={style.copyContainer}>
+                                <div className={`${style.title} mt-1 p-1`}>
+                                    Create Your NFT !!
+                                </div>
 
-                            <div className={`${style.searchBar} mt-2 p-1`}>
-                                <input className={style.searchInput}
-                                    placeholder='Collection Name' disabled
-                                //onChange={e => updateFormInput({ ...formInput, collectionName: e.target.value })}
-                                />
+                                <div className={`${style.searchBar} mt-2 p-1`}>
+                                    <input className={style.searchInput}
+                                        placeholder='Collection Name' disabled
+                                    //onChange={e => updateFormInput({ ...formInput, collectionName: e.target.value })}
+                                    />
+                                </div>
+                                <div className={`${style.searchBar} mt-2 p-1`}>
+                                    <input className={style.searchInput}
+                                        placeholder='Collection Symbol' disabled
+                                    //onChange={e => updateFormInput({ ...formInput, collectionSymbol: e.target.value })}
+                                    />
+                                </div>
+                                <div className={`${style.searchBar} mt-2 p-1`}>
+                                    <input className={style.searchInput}
+                                        placeholder='Asset/NFT Name'
+                                        onChange={e => updateFormInput({ ...formInput, name: e.target.value })}
+                                    />
+                                </div>
+                                <div className={`${style.searchBar} mt-2 p-6`}>
+                                    <textarea className={style.searchInput}
+                                        placeholder="Asset Description"
+                                        onChange={e => updateFormInput({ ...formInput, description: e.target.value })}
+                                    />
+                                </div>
+                                <div className={`${style.searchBar} mt-2 p-1`}>
+                                    <input className={style.searchInput}
+                                        placeholder={`Asset Price in ${(!getConfigByChain(chainId) ? "" : getConfigByChain(chainId)[0].alt)}`}
+                                        onChange={e => updateFormInput({ ...formInput, price: e.target.value })}
+                                    />
+                                </div>
+                                <div className={`${style.searchBar} mt-2 p-1`}>
+                                    <input className={style.searchInput}
+                                        type="file"
+                                        name="Asset"
+                                        onChange={onChange}
+                                    />
+                                </div>
                             </div>
-                            <div className={`${style.searchBar} mt-2 p-1`}>
-                                <input className={style.searchInput}
-                                    placeholder='Collection Symbol' disabled
-                                //onChange={e => updateFormInput({ ...formInput, collectionSymbol: e.target.value })}
-                                />
-                            </div>
-                            <div className={`${style.searchBar} mt-2 p-1`}>
-                                <input className={style.searchInput}
-                                    placeholder='Asset/NFT Name'
-                                    onChange={e => updateFormInput({ ...formInput, name: e.target.value })}
-                                />
-                            </div>
-                            <div className={`${style.searchBar} mt-2 p-6`}>
-                                <textarea className={style.searchInput}
-                                    placeholder="Asset Description"
-                                    onChange={e => updateFormInput({ ...formInput, description: e.target.value })}
-                                />
-                            </div>
-                            <div className={`${style.searchBar} mt-2 p-1`}>
-                                <input className={style.searchInput}
-                                    placeholder={`Asset Price in ${(!getConfigByChain(chainId) ? "" : getConfigByChain(chainId)[0].alt)}`}
-                                    onChange={e => updateFormInput({ ...formInput, price: e.target.value })}
-                                />
-                            </div>
-                            <div className={`${style.searchBar} mt-2 p-1`}>
-                                <input className={style.searchInput}
-                                    type="file"
-                                    name="Asset"
-                                    onChange={onChange}
-                                />
-                            </div>
-                        </div>
+                        )}
                         {loadingState === true ? (
                             <div className={style.midRow}>
                                 <RingLoader className={style.midRow} color={'#ffffff'} loading={loadingState} size={150} />
