@@ -44,45 +44,53 @@ const verifyOwner = () => {
     const [loadingState, setLoadingState] = useState(false)
     const [circle, setCircle] = useState(false)
 
-
-    async function loadNFTBalance() {
-        setLoadingState(false)
+    useEffect(() => {
         const web3Modal = new Web3Modal({
             network: "mainnet",
             cacheProvider: true,
         })
         const connection = await web3Modal.connect()
         const provider = new ethers.providers.Web3Provider(connection)
+    },
 
-        if (selectedToken.address != "0x000" && formInput.destination != '') {
-            setCircle(true)
-            const tokenContract = new ethers.Contract(selectedToken.address, NFT.abi, provider)
-            let data;
-            if (formInput.destination === "this") {
-                data = await tokenContract.balanceOf(address)
+        async function loadNFTBalance() {
+            setLoadingState(false)
+            const web3Modal = new Web3Modal({
+                network: "mainnet",
+                cacheProvider: true,
+            })
+            const connection = await web3Modal.connect()
+            const provider = new ethers.providers.Web3Provider(connection)
+
+            if (selectedToken.address != "0x000" && formInput.destination != '') {
+                setCircle(true)
+                const tokenContract = new ethers.Contract(selectedToken.address, NFT.abi, provider)
+                let data;
+                if (formInput.destination === "this") {
+                    data = await tokenContract.balanceOf(address)
+                } else {
+                    setWallet(formInput.destination)
+                    data = await tokenContract.balanceOf(formInput.destination)
+                }
+                const pow = new BigNumber('10').pow(new BigNumber(selectedToken.decimal))
+                setBalance(web3BNToFloatString(data, pow, 0, BigNumber.ROUND_DOWN))
+                setCircle(false)
+                setLoadingState(true)
             } else {
-                setWallet(formInput.destination)
-                data = await tokenContract.balanceOf(formInput.destination)
+                alert("Enter Valid details please!!")
             }
-            const pow = new BigNumber('10').pow(new BigNumber(selectedToken.decimal))
-            setBalance(web3BNToFloatString(data, pow, 0, BigNumber.ROUND_DOWN))
-            setCircle(false)
-            setLoadingState(true)
-        } else {
-            alert("Enter Valid details please!!")
-        }
 
-    }
+        }
     function web3BNToFloatString(
-        bn,
-        divideBy,
-        decimals,
-        roundingMode = BigNumber.ROUND_DOWN
-    ) {
-        const converted = new BigNumber(bn.toString())
-        const divided = converted.div(divideBy)
-        return divided.toFixed(decimals, roundingMode)
-    }
+            bn,
+            divideBy,
+            decimals,
+            roundingMode = BigNumber.ROUND_DOWN
+        ) {
+            const converted = new BigNumber(bn.toString())
+            const divided = converted.div(divideBy)
+            return divided.toFixed(decimals, roundingMode)
+        }
 
     return (
         <div>
