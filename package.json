@@ -1,0 +1,47 @@
+{
+  "name": "nft-marketplace",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@3rdweb/hooks": "^1.9.2",
+    "@3rdweb/react": "^1.9.3",
+    "@emotion/react": "^11.8.1",
+    "@headlessui/react": "^1.5.0",
+    "@heroicons/react": "^1.0.6",
+    "@nomiclabs/hardhat-ethers": "^2.0.5",
+    "@nomiclabs/hardhat-waffle": "^2.0.2",
+    "@openzeppelin/contracts": "^4.5.0",
+    "axios": "^0.26.0",
+    "bignumber.js": "^9.0.2",
+    "chai": "^4.3.6",
+    "ethers": "^5.5.4",
+    "hardhat": "^2.8.4",
+    "ipfs-http-client": "^50.1.2",
+    "next": "12.1.0",
+    "npm": "^8.5.5",
+    "react": "17.0.2",
+    "react-bootstrap": "^2.2.1",
+    "react-circular-progressbar": "^2.0.4",
+    "react-dom": "17.0.2",
+    "react-hot-toast": "^2.2.0",
+    "react-icons": "^4.3.1",
+    "react-modal": "^3.14.4",
+    "react-native-circular-progress-indicator": "^2.0.6",
+    "react-spinners": "^0.11.0",
+    "react-tsparticles": "^1.42.4",
+    "web3modal": "^1.9.5"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.2",
+    "eslint": "8.9.0",
+    "eslint-config-next": "12.1.0",
+    "postcss": "^8.4.6",
+    "tailwindcss": "^3.0.23"
+  }
+}
