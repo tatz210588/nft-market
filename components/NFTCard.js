@@ -6,7 +6,6 @@ import NFT from "../artifacts/contracts/NFT.sol/NFT.json"
 import { getConfigByChain } from "../config"
 import NFTMarket from "../artifacts/contracts/NFTMarket.sol/NFTMarket.json"
 import Modal from 'react-modal'
-import ModalContent from './ModalContent'
 import { ellipseAddress, ellipseAddressDetails, ellipseName, createUrltoken, createUrlAddress } from './utils'
 import Web3Modal from 'web3modal'
 import { useRouter } from "next/router";
@@ -185,14 +184,14 @@ const NFTCard = ({ nftItem }) => {
                 <div className={`${style.title} w-full flex mt-8 text-white font-bold`}>
                     Seller:
                     <div className={`font-semibold text-sm ml-3 mt-0.5 text-[#8a939b]`}>
-                        <u><a title='View On Blockchain Explorer' target='_blank' href={createUrlAddress(nftItem.seller, chainId)}
+                        <u><a title='View On Blockchain Explorer' target='_blank' rel="noreferrer" href={createUrlAddress(nftItem.seller, chainId)}
                         >{ellipseAddressDetails(nftItem.seller)}       📝</a></u>
                     </div>
                 </div>
                 <div className={`${style.title} w-full flex mt-8 text-white font-bold`}>
                     Owner:
                     <div className={`font-semibold text-sm ml-3 mt-0.5 text-[#8a939b]`}>
-                        <u><a title='View On Blockchain Explorer' target='_blank' href={createUrlAddress(nftItem.owner, chainId)}>
+                        <u><a title='View On Blockchain Explorer' target='_blank' rel="noreferrer" href={createUrlAddress(nftItem.owner, chainId)}>
                             {ellipseAddressDetails(nftItem.owner) === '0x000000000...00000000000' ? "Listed for sale(No Owner)" : ellipseAddressDetails(nftItem.owner)}       📝
                         </a></u>
                     </div>
@@ -200,7 +199,7 @@ const NFTCard = ({ nftItem }) => {
                 <div className={`${style.title} w-full flex mt-8 text-white font-bold`}>
                     Creator:
                     <div className={`font-semibold text-sm ml-3 mt-0.5 text-[#8a939b]`}>
-                        <u><a title='View On Blockchain Explorer' target="_blank" href={createUrlAddress(nftItem.creator, chainId)}>{ellipseAddressDetails(nftItem.creator)}       📝</a></u>
+                        <u><a title='View On Blockchain Explorer' target="_blank" rel="noreferrer" href={createUrlAddress(nftItem.creator, chainId)}>{ellipseAddressDetails(nftItem.creator)}       📝</a></u>
                     </div>
                 </div>
                 <div className={`${style.title} w-full flex mt-8 text-white font-bold`}
@@ -208,7 +207,7 @@ const NFTCard = ({ nftItem }) => {
                 >
                     NFT Contract address:
                     <div className={`font-semibold text-sm ml-3 mt-0.5 text-[#8a939b]`}>
-                        <u><a title='View On Blockchain Explorer' target="_blank" href={createUrltoken(nftaddress, chainId)}>{ellipseAddressDetails(nftaddress)}       📝</a></u>
+                        <u><a title='View On Blockchain Explorer' target="_blank" rel="noreferrer" href={createUrltoken(nftaddress, chainId)}>{ellipseAddressDetails(nftaddress)}       📝</a></u>
                     </div>
                 </div>
                 <div className={`${style.title} w-full flex mt-8 text-white font-bold`}>

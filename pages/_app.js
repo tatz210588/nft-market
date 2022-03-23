@@ -3,7 +3,6 @@ import Link from 'next/link'
 import Header from '../components/Header'
 import { ThirdwebProvider } from "@3rdweb/react";
 import Footer from '../components/Footer'
-import TestHead from "../components/TestHead"
 
 
 

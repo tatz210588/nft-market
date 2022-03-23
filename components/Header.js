@@ -5,7 +5,6 @@ import Link from "next/link";
 import { AiOutlineSearch } from "react-icons/ai"
 import { CgProfile } from "react-icons/cg"
 import { MdOutlineAccountBalanceWallet } from 'react-icons/md'
-import Headernew from '../components/Headernew'
 import { ConnectWallet } from "@3rdweb/react";
 import { Fragment } from 'react'
 import { Popover, Transition } from '@headlessui/react'
@@ -17,10 +16,13 @@ import {
     MenuIcon,
     PhoneIcon,
     PlayIcon,
+    ClipboardIcon,
     RefreshIcon,
+    IdentificationIcon,
     ShieldCheckIcon,
     SupportIcon,
     ViewGridIcon,
+    TagIcon,
     XIcon,
 } from '@heroicons/react/outline'
 import { ChevronDownIcon } from '@heroicons/react/solid'
@@ -31,19 +33,19 @@ const solutions = [
         name: 'My Collections',
         description: 'Find all the NFTs owned by me.',
         href: '/my-assets',
-        icon: ChartBarIcon,
+        icon: CalendarIcon,
     },
     {
         name: 'My Listings',
         description: 'A collection of all the NFTs put for sale by me',
         href: '/creator-dashboard',
-        icon: CursorClickIcon,
+        icon: ClipboardIcon,
     },
     {
         name: 'My Creations',
         description: "Find a wide list of NFTs created by me.",
         href: '/my-creations',
-        icon: ShieldCheckIcon
+        icon: BookmarkAltIcon
     },
     {
         name: 'Validate Ownership',

@@ -13,7 +13,6 @@ import { css } from "@emotion/react";
 import CircleLoader from "react-spinners/CircleLoader"
 import { useWeb3 } from "@3rdweb/hooks";
 import Web3Modal from "web3modal"
-import Particle from "../components/Particle"
 
 
 

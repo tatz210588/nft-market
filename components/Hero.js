@@ -1,6 +1,5 @@
 import React from 'react'
 import Router from 'next/router'
-import Particle from "../components/Particle"
 
 const style = {
     wrapper: `relative`,
