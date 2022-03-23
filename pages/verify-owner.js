@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import Router from 'next/router'
-import { getTokenByChain } from "../assets/tokenConfig"
+import { getTokenByChain } from '../assets/tokenConfig'
 import { getConfigByChain } from '../config';
-import { useWeb3 } from "@3rdweb/hooks";
-import NFT from "../artifacts/contracts/NFT.sol/NFT.json"
-import Web3Modal from "web3modal"
+import { useWeb3 } from '@3rdweb/hooks';
+import NFT from '../artifacts/contracts/NFT.sol/NFT.json'
+import Web3Modal from 'web3modal'
 import { ethers } from 'ethers'
-import BigNumber from "bignumber.js";
+import BigNumber from 'bignumber.js';
 import { ellipseAddress } from '../components/utils';
-import BeatLoader from "react-spinners/BeatLoader";
-import RingLoader from "react-spinners/RingLoader"
+import BeatLoader from 'react-spinners/BeatLoader';
+import RingLoader from 'react-spinners/RingLoader'
 
 
 const style = {
@@ -34,11 +34,11 @@ const style = {
 
 
 
-export default function verifyOwner() {
+const VerifyOwner = () => {
 
     const { address, chainId } = useWeb3();
     //const chainName = getNetworkMetadata(chainId).chainName;
-    //const chainId = "80001"
+    //const chainId = '80001'
     //console.log(chainId)
     const [balance, setBalance] = useState(0);
     const [formInput, updateFormInput] = useState({ destination: '' })
@@ -52,17 +52,17 @@ export default function verifyOwner() {
     async function loadNFTBalance() {
         setLoadingState(false)
         const web3Modal = new Web3Modal({
-            network: "mainnet",
+            network: 'mainnet',
             cacheProvider: true,
         })
         const connection = await web3Modal.connect()
         const provider = new ethers.providers.Web3Provider(connection)
 
-        if (selectedToken.address != "0x000" && formInput.destination != '') {
+        if (selectedToken.address != '0x000' && formInput.destination != '') {
             setCircle(true)
             const tokenContract = new ethers.Contract(selectedToken.address, NFT.abi, provider)
             let data;
-            if (formInput.destination === "this") {
+            if (formInput.destination === 'this') {
                 data = await tokenContract.balanceOf(address)
             } else {
                 setWallet(formInput.destination)
@@ -73,7 +73,7 @@ export default function verifyOwner() {
             setCircle(false)
             setLoadingState(true)
         } else {
-            alert("Enter Valid details please!!")
+            alert('Enter Valid details please!!')
         }
 
     }
@@ -97,7 +97,7 @@ export default function verifyOwner() {
                         {!chainId ? (
                             <div className={style.spinner}>
                                 <RingLoader className={style.spinner} color={'#ffffff'} size={50} />
-                                <p><b>Click on the "Connect Wallet" button !!</b></p>
+                                <p><b>Click on the Connect Wallet button !!</b></p>
 
                             </div>
                         ) : (
@@ -148,7 +148,7 @@ export default function verifyOwner() {
                                 )}
                                 {loadingState === true && (
                                     <div className={`${style.description} mt-4 p-1`}>
-                                        {formInput.destination === "this" ? ellipseAddress(address) : ellipseAddress(wallet)} is the proud owner of {balance} nos  {selectedToken.name}
+                                        {formInput.destination === 'this' ? ellipseAddress(address) : ellipseAddress(wallet)} is the proud owner of {balance} nos  {selectedToken.name}
                                     </div>
                                 )}
 
@@ -163,5 +163,5 @@ export default function verifyOwner() {
 
 
 }
-
+export default VerifyOwner
 

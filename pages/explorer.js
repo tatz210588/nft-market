@@ -48,7 +48,7 @@ const override = css`
   border-color: white;
 `;
 
-const explorer = () => {
+const Explorer = () => {
 
     const [nfts, setNfts] = useState([])
     const [loadingState, setLoadingState] = useState(true)
@@ -143,4 +143,4 @@ const explorer = () => {
     )
 }
 
-export default explorer
+export default Explorer

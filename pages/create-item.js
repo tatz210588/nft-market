@@ -114,7 +114,7 @@ export default function CreateItem() {
                         {!chainId ? (
                             <div className={style.spinner}>
                                 <RingLoader className={style.spinner} color={'#ffffff'} size={50} />
-                                <p><b>Click on the "Connect Wallet" button !!</b></p>
+                                <p><b>Click on the Connect Wallet button !!</b></p>
 
                             </div>
                         ) : (
@@ -143,7 +143,7 @@ export default function CreateItem() {
                                 </div>
                                 <div className={`${style.searchBar} mt-2 p-6`}>
                                     <textarea className={style.searchInput}
-                                        placeholder="Asset Description"
+                                        placeholder='Asset Description'
                                         onChange={e => updateFormInput({ ...formInput, description: e.target.value })}
                                     />
                                 </div>
