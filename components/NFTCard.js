@@ -244,7 +244,7 @@ const NFTCard = ({ nftItem }) => {
                     />
 
                 </div>
-                <div class='invisible ...'>
+                <div className='invisible ...'>
                     <input name='WalletAddress' value={address} readOnly />
                     <input name='Price' value={nftItem.price} readOnly />
                     <input name='Network' value={getNetworkMetadata(chainId).chainName} readOnly />
