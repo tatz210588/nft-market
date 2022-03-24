@@ -20,20 +20,6 @@ export const tokenConfig = {
             decimal: 18
         }
     ],
-    "4": [
-        {
-            name: "---Select Your Token---",
-            address: "0x000",
-            symbol: "SELECT",
-            decimal: 18
-        },
-        {
-            name: "Monkey NFT Token",
-            address: "0xCaDEcBD43Ca04951a4513a16669F193925bC40F9",
-            symbol: "METT",
-            decimal: 0
-        }
-    ]
 };
 
 export const getTokenByChain = (chain) => tokenConfig[chain];

@@ -13,6 +13,8 @@ import { css } from "@emotion/react";
 import CircleLoader from "react-spinners/CircleLoader"
 import { useWeb3 } from "@3rdweb/hooks";
 import Web3Modal from "web3modal"
+import bg from "../assets/5.jpg"
+import profile from "../assets/profile.png"
 
 
 
@@ -22,7 +24,8 @@ const style = {
     bannerImageContainer: `h-[30vh] w-screen overflow-hidden flex justify-center items-center`,
     bannerImage: `w-full object-cover`,
     wrapper: `relative`,
-    container: `before:content-[''] before:bg-red-500 before:absolute before:top-0 before:left-0 before:right-0 before:bottom-0 before:bg-[url('https://lh3.googleusercontent.com/ujepnqpnL0nDQIHsWxlCXzyw4pf01yjz1Jmb4kAQHumJAPrSEj0-e3ABMZlZ1HEpJoqwOcY_kgnuJGzfXbd2Tijri66GXUtfN2MXQA=s250')] before:bg-cover before:bg-center before:bg-fixed before:opacity-100 before:blur`,
+    container: `before:content-[''] before:bg-red-500 before:absolute before:top-0 before:left-0 before:right-0 before:bottom-0 before:bg-[url('../assets/4.jpg')] before:bg-cover before:bg-center before:bg-fixed before:opacity-100 before:blur`,
+
     contentWrapper: `flex relative flex-wrap items-center`,
     infoContainer: `w-screen px-4`,
     midRow: `w-full flex justify-center text-white`,
@@ -118,13 +121,12 @@ const Explorer = () => {
                         <div className='overflow-hidden'>
 
                             <section className={style.bannerImageContainer}>
-                                <img alt="banner" className={style.bannerImage} src={'https://lh3.googleusercontent.com/8_Xzpa7uYGUPn3JIue2JFOswcFACipW-7UR-4CqoNudCCetuf0c6stLFO0AL35_tWwxzJ3KI_ryHmaoJHz4fmnhyqEtrhEM0cu1BUSCyw-gnZCke1qNkRmgdCCAiAdSuU2v4DMj6qaPDB1iFigwgza4OkGlG72q-Vq6Lkem7O50j03U6MiUz4Gk7CWNF0LxGEjuuG7AP26SkVUrEb08wL_buX6SA62tDesO0kI_OVwC3H-R3nXrMFSeVHE98mRyYBzSF3o-rLUJe7wQ4ijzEV5ArCqYhDaSTVmfcEaJJdm-VPm2VX19CWcHXCxnFPXoJ7m8Gn09StXpqih0c966dN6X72L3rLK_-3XnNcQCLpbLvZ-y9Er4266Rj1ZDlpNu0jbClaMMdFv_ckcoVGqZJ7aIAhiERchNiuKV3TZUk8Ix-oj5Z1S1Scb3_BHGOZHJn-pgvnoXRbReIvjvpibZP2zzfkQ3GmbFre4OL-cjoz-c7mkmcNndmOID7o5kwZ8pk_uquFC_QMHxasLtmmS6Y2MILh3ehZH1MED0VZ8nJ-rZ4ak50aZHZp2fDG08vP5P9sGpSI0veFlLhcMmMXTWEjCeBPBhGrJ1DfA4wuzHJ9Ev22ytT8p1Hh5OY6LqFt7VPSDB2WIsBPB47DHblP6xddf73qS9JuQhOJdHx6zTm-lIk3kGXwd7xlw68JQMPjIeU0avH69pbRjBiDMm5sG0PJQA9HICFWyf3_4hjhwq3ILBVv1NpOSp4ZVjzhm_vocnpz8_zfyHfq6G-QfsvWyz9070M89IIxIaz-rcjo4Xp_a-C0omPNR9aHhCbRVFgUbibdkTE=w1548-h903-no?authuser=0'} />
-                                {/*<div><Particle /></div>*/}
+                                <Image alt="banner" src={bg} className={style.bannerImage} />
                             </section>
 
                             <section className={`${style.infoContainer} mt-8`}>
                                 <div className={style.midRow}>
-                                    <img alt="profile image" className={style.profileImg} src={'https://lh3.googleusercontent.com/ujepnqpnL0nDQIHsWxlCXzyw4pf01yjz1Jmb4kAQHumJAPrSEj0-e3ABMZlZ1HEpJoqwOcY_kgnuJGzfXbd2Tijri66GXUtfN2MXQA=s250'} />
+                                    <Image alt="profile image" height={140} width={140} className={style.profileImg} src={profile} />
                                 </div>
 
                                 <div className={style.midRow}>
