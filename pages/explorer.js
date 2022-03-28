@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Link from 'next/link';
 import NFTCard from "../components/NFTCard";
+import Image from "next/image"
 import { CgWebsite } from "react-icons/cg";
 import { AiOutlineInstagram, AiOutlineTwitter } from "react-icons/ai";
 import { HiDotsVertical } from "react-icons/hi"
@@ -30,7 +31,8 @@ const style = {
     infoContainer: `w-screen px-4`,
     midRow: `w-full flex justify-center text-white`,
     endRow: `w-full flex justify-end text-white`,
-    profileImg: `w-40 h-40 object-cover rounded-full border-2 border-[#202225] mt-[-6rem]`,
+    profileImgContainer: `w-40 h-40 z-40 object-cover rounded-full  mt-[-5rem]`,
+    profileImg: `w-40 h-40 z-40 object-cover rounded-full border-2 border-[#202225] mt-[-5rem]`,
     socialIconsContainer: `flex text-3xl mb-[-2rem]`,
     socialIconsWrapper: `w-44 mt-[1rem]`,
     socialIconsContent: `flex container justify-between text-[1.4rem] border-2 rounded-lg px-2`,
@@ -120,19 +122,21 @@ const Explorer = () => {
 
                         <div className='overflow-hidden'>
 
-                            <section className={style.bannerImageContainer}>
+                            <div className={style.bannerImageContainer}>
                                 <Image alt="banner" src={bg} className={style.bannerImage} />
-                            </section>
+                            </div>
 
-                            <section className={`${style.infoContainer} mt-8`}>
+                            <div className={style.infoContainer}>
                                 <div className={style.midRow}>
-                                    <Image alt="profile image" height={140} width={140} className={style.profileImg} src={profile} />
+                                    <div className={style.profileImgContainer}>
+                                        <Image alt="profile image" height={140} width={140} className={style.profileImg} src={profile} />
+                                    </div>
                                 </div>
 
                                 <div className={style.midRow}>
                                     <div className={style.title}>Choose from Our Wide Range of Original Collections</div>
                                 </div>
-                            </section>
+                            </div>
                         </div>))}
                     <div className="flex flex-wrap">
                         {nfts.map((nftItem, id) => (

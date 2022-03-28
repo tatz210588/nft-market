@@ -43,3 +43,5 @@ typechain
 
 #Hardhat files
 cache
+node_modules
+node_modules

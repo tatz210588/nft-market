@@ -22,7 +22,7 @@ const modalStyle = {
     width: '50px'
 }
 const style = {
-    wrapper: `bg-[#303339]  w-[14rem] h-[30rem] my-10 mx-5 rounded-2xl overflow-hidden `,
+    wrapper: `bg-[#f4f4f6]  w-[20rem] h-[30rem] my-10 mx-5 rounded-2xl overflow-hidden `,
     modalWrapper: `bg-[#303339]  w-1/2 h-2/3 mr-auto ml-auto my-28 rounded-2xl p-2 overflow-hidden  relative`,
     modalListWrapper: `bg-[#303339]  w-1/3 h-1/2 mr-auto ml-auto my-28 rounded-2xl p-2 overflow-hidden  relative overflow-auto`,
     imgContainer: `h-2/3 w-full overflow-hidden flex justify-center items-center`,
@@ -32,14 +32,14 @@ const style = {
     infoLeft: `flex-0.6 flex-wrap`,
     collectionName: `font-semibold text-sm text-[#8a939b]`,
     title: `relative text-white`,
-    assetName: `font-bold text-lg mt-2`,
+    assetName: `font-bold text-lg mt-2 text-[#565759]`,
     infoRight: `flex-0.4 text-right`,
     priceTag: `font-semibold text-sm text-[#8a939b]`,
     priceValue: `flex items-center text-xl font-bold mt-2`,
     ethLogo: `h-5 mr-2`,
     likes: `text-[#8a939b] font-bold flex items-center w-full justify-end mt-3`,
     likeIcon: `text-xl mr-2`,
-    nftButton: `font-bold w-5/6 ml-12 bg-pink-500 text-white text-lg rounded p-4 shadow-lg hover:bg-[#19a857] cursor-pointer`,
+    nftButton: `font-bold w-full bg-pink-500 text-white text-lg rounded shadow-lg hover:bg-[#19a857] cursor-pointer`,
     searchBar: `flex flex-1 mx-[0.8rem] w-max-[520px] items-center bg-[#363840] rounded-[0.8rem] hover:bg-[#757199]`,
     searchInput: `h-[2.6rem] w-full border-0 bg-transparent outline-0 ring-0 px-2 pl-0 text-[#e6e8eb] placeholder:text-[#8a939b]`,
 
@@ -145,6 +145,7 @@ const NFTCard = ({ nftItem }) => {
         const price = ethers.utils.parseUnits(formInput.price, 'ether')
         let contract = new ethers.Contract(getConfigByChain(network.chainId)[0].nftmarketaddress, NFTMarket.abi, signer)
         let listingPrice = await contract.getListingPrice()
+        console.log(listingPrice)
         listingPrice = listingPrice.toString()
         const transactionListItem = await contract.listMarketItem(
             getConfigByChain(network.chainId)[0].nftaddress, nftItem.tokenId, price, { value: listingPrice }
