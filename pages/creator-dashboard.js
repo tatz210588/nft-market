@@ -49,7 +49,8 @@ export default function CreatorDashboard() {
     const { address, chainId } = useWeb3()
     useEffect(() => {
         loadNFTs()
-    }, [address, chainId])
+    }, [address, chainId, nfts])
+
     async function loadNFTs() {
         const web3Modal = new Web3Modal({
             network: "mainnet",

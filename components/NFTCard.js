@@ -11,16 +11,10 @@ import Web3Modal from 'web3modal'
 import { useRouter } from "next/router";
 import { useWeb3 } from "@3rdweb/hooks";
 import axios from 'axios'
+import BeatLoader from 'react-spinners/BeatLoader';
+import toast, { Toaster } from "react-hot-toast"
 
-const modalStyle = {
-    position: 'fixed',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%,-50%)',
-    padding: '50px',
-    zIndex: 1000,
-    width: '50px'
-}
+
 const style = {
     wrapper: `bg-[#f4f4f6]  w-[20rem] h-[30rem] my-10 mx-5 rounded-2xl overflow-hidden `,
     modalWrapper: `bg-[#303339]  w-1/2 h-2/3 mr-auto ml-auto my-28 rounded-2xl p-2 overflow-hidden  relative`,
@@ -32,20 +26,20 @@ const style = {
     infoLeft: `flex-0.6 flex-wrap`,
     collectionName: `font-semibold text-sm text-[#8a939b]`,
     title: `relative text-white`,
+    midRow: `text-white`,
     assetName: `font-bold text-lg mt-2 text-[#565759]`,
     infoRight: `flex-0.4 text-right`,
     priceTag: `font-semibold text-sm text-[#8a939b]`,
-    priceValue: `flex items-center text-xl font-bold mt-2`,
+    priceValue: `flex items-center text-xl font-bold mt-2 text-[#565759]`,
     ethLogo: `h-5 mr-2`,
     likes: `text-[#8a939b] font-bold flex items-center w-full justify-end mt-3`,
     likeIcon: `text-xl mr-2`,
-    nftButton: `font-bold w-full bg-pink-500 text-white text-lg rounded shadow-lg hover:bg-[#19a857] cursor-pointer`,
+    nftButton: `font-bold w-full bg-pink-500 text-white text-lg rounded shadow-lg hover:bg-[#19a857] cursor-pointer mt-8 p-4`,
     searchBar: `flex flex-1 mx-[0.8rem] w-max-[520px] items-center bg-[#363840] rounded-[0.8rem] hover:bg-[#757199]`,
     searchInput: `h-[2.6rem] w-full border-0 bg-transparent outline-0 ring-0 px-2 pl-0 text-[#e6e8eb] placeholder:text-[#8a939b]`,
 
 }
 
-//Modal.setAppElement("#div")
 const NFTCard = ({ nftItem }) => {
 
     const [modalisOpen, setmodalisOpen] = useState(false)
@@ -57,38 +51,28 @@ const NFTCard = ({ nftItem }) => {
     const router = useRouter();
     const [modalDetails, setModalDetails] = useState(false);
     const [modalTransfer, setModalTransfer] = useState(false);
-    const { address, chainId, getNetworkMetadata } = useWeb3();
+    const { address, chainId, getNetworkMetadata, balance } = useWeb3();
     const nftaddress = getConfigByChain(chainId)[0].nftaddress
-
-    console.log("useWeb3", getNetworkMetadata(chainId).chainName)
+    console.log("nftItem", nftItem)
 
     async function buyNFT(nftItem) {
 
         if (formInputUserData.name === '' || formInputUserData.email === '' || formInputUserData.phone === '') {
-            alert("Please fill your details first !!");
-        } else {
+            toast.error("Please fill your details first !!");
+        } else if (Number(balance.formatted) <= nftItem.price) {
+            toast.error("You do not have sufficent money to buy this NFT");
+        }
+        else {
+            setLoadingState(true)
             const web3modal = new Web3modal()
             const connection = await web3modal.connect()
             const provider = new ethers.providers.Web3Provider(connection)
             const signer = provider.getSigner()
             const network = await provider.getNetwork()
-
-            /*const form = document.getElementById('my-form');
-            form.addEventListener("submit", function (e) {
-                console.log("hhh");
-                e.preventDefault();
-                const data = new FormData(form);
-                const action = e.target.action;
-                fetch(action, {
-                    method: 'POST',
-                    body: data,
-                })
-                    .then(() => {
-                        alert("Success!");
-                    })
-            });*/
+            console.log(nftItem.sold)
 
             const datas = {
+                Date: Date(),
                 Name: formInputUserData.name,
                 Email: formInputUserData.email,
                 Ph: formInputUserData.phone,
@@ -97,26 +81,32 @@ const NFTCard = ({ nftItem }) => {
                 Network: network.name,
                 ChainID: network.chainId,
                 NFTAddress: `${nftaddress}/${nftItem.tokenId}`,
-                IPFS_Link: nftItem.image,
+                IPFS_Link: nftItem.image
             }
             //https://api.sheetmonkey.io/form/vsjT2nG9o5JcB8FJP13hLr
             //https://sheet.best/api/sheets/8b0cd1d3-410e-48e6-b9a9-5f9430d905a4
 
-            axios.post('https://api.sheetmonkey.io/form/vsjT2nG9o5JcB8FJP13hLr', datas).then((response) => {
-                console.log(response);
-            })
-
+            //saveToExcel(datas)
 
             const marketContract = new ethers.Contract(getConfigByChain(network.chainId)[0].nftmarketaddress, NFTMarket.abi, signer)
             const price = ethers.utils.parseUnits(nftItem.price.toString(), 'ether')
             console.log("price", nftItem.price)
             const transaction = await marketContract.createMarketSale(getConfigByChain(network.chainId)[0].nftaddress, nftItem.tokenId, { value: price })
             await transaction.wait()
+            setLoadingState(false)
+            toast.success("Purchase Successful.")
             Router.push({ pathname: "/my-assets" })
         }
     }
 
+    async function saveToExcel(datas) {
+        axios.post('https://sheet.best/api/sheets/8b0cd1d3-410e-48e6-b9a9-5f9430d905a4', datas).then((response) => {
+            console.log("post", response);
+        })
+    }
+
     async function transferItem(nftItem) {
+        setLoadingState(true)
         const web3modal = new Web3Modal()
         const connection = await web3modal.connect()
         const provider = new ethers.providers.Web3Provider(connection)
@@ -131,10 +121,14 @@ const NFTCard = ({ nftItem }) => {
             getConfigByChain(network.chainId)[0].nftaddress, nftItem.tokenId, destination
         )
         await transactionListItem.wait()
-        router.push('/')
+        toast.success("Transfer Successful.")
+        setLoadingState(false)
+        setModalTransfer(false)
+        Router.push({ pathname: "/my-assets" })
     }
 
     async function relistItem(nftItem) {
+        setLoadingState(true)
         const web3modal = new Web3Modal()
         const connection = await web3modal.connect()
         const provider = new ethers.providers.Web3Provider(connection)
@@ -151,14 +145,21 @@ const NFTCard = ({ nftItem }) => {
             getConfigByChain(network.chainId)[0].nftaddress, nftItem.tokenId, price, { value: listingPrice }
         )
         await transactionListItem.wait()
-        router.push('/explorer')
+        toast.success("Item listed for sale successfully.")
+        setLoadingState(false)
+        router.push('/creator-dashboard')
     }
 
 
     return (
         <div id="div" className={style.wrapper} >
+            <Toaster position="top-center" reverseOrder={false} />
             <Modal isOpen={modalTransfer} className={style.modalListWrapper}>
-                <button className={` w-full flex justify-end text-white hover:text-[#fc1303]`} onClick={() => setModalTransfer(false)}>Close ❌</button>
+                <button className={` w-full flex justify-end text-white hover:text-[#fc1303]`} onClick={() => {
+                    setModalTransfer(false)
+                    setLoadingState(false)
+                }}>Close ❌</button>
+
                 <div className={style.title}>
                     <br />
                     <p>Disclaimer:</p>
@@ -175,10 +176,17 @@ const NFTCard = ({ nftItem }) => {
                         onChange={e => updateFormInput({ ...formInput, destination: e.target.value })}
                     />
                 </div>
-                <button
-                    className={style.nftButton}
-                    onClick={() => transferItem(nftItem)}>Transfer
-                </button>
+                {loadingState == true ? (
+                    <div className={`${style.midRow} m-8`}>
+                        <BeatLoader className={style.midRow} color={'#ffffff'} loading={loadingState} size={15} />
+                        Transfer in progress. Please Wait✋🏻...
+                    </div>
+                ) : (
+                    <button
+                        className={style.nftButton}
+                        onClick={() => transferItem(nftItem)}>Transfer
+                    </button>
+                )}
             </Modal>
             <Modal isOpen={modalDetails} className={style.modalListWrapper}>
                 <button className={` w-full flex justify-end text-white hover:text-[#fc1303]`} onClick={() => setModalDetails(false)}>Close ❌</button>
@@ -220,11 +228,13 @@ const NFTCard = ({ nftItem }) => {
             </Modal >
 
             <Modal isOpen={modalisOpen} className={style.modalWrapper}>
-                <button className={` w-full flex justify-end text-white hover:text-[#fc1303]`} onClick={() => setmodalisOpen(false)}>Close ❌</button>
+                <button className={` w-full flex justify-end text-white hover:text-[#fc1303]`} onClick={() => {
+                    setmodalisOpen(false)
+                    setLoadingState(false)
+                }}>Close ❌</button>
                 <div className={`${style.title} w-full flex justify-center text-white font-bold`}>
                     Enter Your Details
                 </div>
-                {/*<form id="my-form" method='POST' action="https://api.sheetmonkey.io/form/vsjT2nG9o5JcB8FJP13hLr">*/}
                 <div className={`${style.searchBar} mt-8 p-1`}>
                     <input className={style.searchInput} type="text" name='Name'
                         placeholder='Name' required
@@ -244,23 +254,24 @@ const NFTCard = ({ nftItem }) => {
                     />
 
                 </div>
-                <div className='invisible ...'>
-                    <input name='WalletAddress' value={address} readOnly />
-                    <input name='Price' value={nftItem.price} readOnly />
-                    <input name='Network' value={getNetworkMetadata(chainId).chainName} readOnly />
-                    <input name='ChainID' value={chainId} readOnly />
-                    <input name='NFTAddress' value={`${nftaddress}/${nftItem.tokenId}`} readOnly />
-                    <input name='IPFS_Link' value={nftItem.image} readOnly />
-                </div>
+                {loadingState == true ? (
+                    <div className={`${style.midRow} m-8`}>
+                        <BeatLoader className={style.midRow} color={'#ffffff'} loading={loadingState} size={15} />
+                        Registering your purchase on blockchain...
+                    </div>
+                ) : (
+                    <button type='submit'
+                        className={style.nftButton}
+                        onClick={() => buyNFT(nftItem)}>OWN THIS NFT NOW for {nftItem.price} {getConfigByChain(chainId)[0].alt} !!
+                    </button>)}
 
-                <button type="submit"
-                    className={style.nftButton}
-                    onClick={() => buyNFT(nftItem)}>OWN THIS NFT NOW for {nftItem.price} {getConfigByChain(chainId)[0].alt} !!
-                </button>
-                {/*</form>*/}
             </Modal>
-            <Modal isOpen={modalEditPrice} className={style.modalWrapper}>
-                <button className={` w-full flex justify-end text-white hover:text-[#fc1303]`} onClick={() => setModalEditPrice(false)}>Close ❌</button>
+            <Modal isOpen={modalEditPrice} className={style.modalListWrapper}>
+                <button className={` w-full flex justify-end text-white hover:text-[#fc1303]`} onClick={() => {
+                    setModalEditPrice(false)
+                    setLoadingState(false)
+                }}>Close ❌</button>
+
                 <div className={`${style.title} w-full flex justify-center font-bold text-white`}>
                     Enter The Following Details:
                 </div>
@@ -271,9 +282,15 @@ const NFTCard = ({ nftItem }) => {
                         onChange={e => updateFormInput({ ...formInput, price: e.target.value })}
                     />
                 </div>
-                <button
-                    className={style.nftButton}
-                    onClick={() => relistItem(nftItem)}>List Item</button>
+                {loadingState == true ? (
+                    <div className={`${style.midRow} m-8`}>
+                        <BeatLoader className={style.midRow} color={'#ffffff'} loading={loadingState} size={15} />
+                        Relisting this item for sale. Please wait✋🏻...
+                    </div>
+                ) : (
+                    <button
+                        className={style.nftButton}
+                        onClick={() => relistItem(nftItem)}>List Item</button>)}
             </Modal>
             <Modal isOpen={modalListOpen} className={style.modalListWrapper}>
                 <button className={` w-full flex justify-end text-white hover:text-[#fc1303]`} onClick={() => setModalListOpen(false)}>Close ❌</button>
@@ -303,8 +320,8 @@ const NFTCard = ({ nftItem }) => {
                 <div className={style.info}>
                     <div className={style.infoLeft}>
                         <div className={style.assetName}>Name: {ellipseName(nftItem.name)}</div>
-                        <div className={style.collectionName}> {ellipseAddress(nftItem.description)} </div>
-                        <div className={`${style.collectionName} cursor-pointer`} onClick={() => { setModalDetails(true) }}> <u>Details</u> </div>
+                        <div className={style.collectionName}> {ellipseName(nftItem.description, 25)} </div>
+                        <div className={`${style.collectionName} cursor-pointer`} onClick={() => { setModalDetails(true) }}> <u>Details...</u> </div>
 
 
                     </div>
@@ -328,11 +345,17 @@ const NFTCard = ({ nftItem }) => {
                         <button className="w-full bg-pink-500 text-white font-bold p-2 rounded" onClick={() => setModalTransfer(true)} >Transfer</button>
                     </div>
                 ) : (
-                    Boolean(nftItem.sold) && (
+                    (Boolean(nftItem.sold) === true ? (
                         <div className="p-4 bg-black mt-4 p-1">
                             <button className="w-full bg-green-500 text-white font-bold  py-2 px-12 rounded">Item Sold</button>
                         </div>
-                    )
+                    ) : (
+                        <div className="p-4 bg-black mt-4 p-1">
+                            <button className="w-full bg-blue-500 text-white font-bold  py-2 px-12 rounded" onClick={() => {
+                                Router.push({ pathname: "/explorer" })
+                            }}>Open for Sale</button>
+                        </div>
+                    ))
                 )
                 )}
 

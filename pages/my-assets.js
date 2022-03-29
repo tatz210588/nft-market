@@ -51,7 +51,7 @@ export default function Myassets() {
 
     useEffect(() => {
         loadNFTs()
-    }, [address, chainId])
+    }, [address, chainId, nfts])
 
     async function loadNFTs() {
         const web3Modal = new Web3Modal()

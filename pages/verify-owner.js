@@ -10,6 +10,7 @@ import BigNumber from 'bignumber.js';
 import { ellipseAddress } from '../components/utils';
 import BeatLoader from 'react-spinners/BeatLoader';
 import RingLoader from 'react-spinners/RingLoader'
+import toast, { Toaster } from "react-hot-toast"
 
 
 const style = {
@@ -44,7 +45,7 @@ const VerifyOwner = () => {
     const [balance, setBalance] = useState(0);
     const [formInput, updateFormInput] = useState({ destination: '' })
     const [wallet, setWallet] = useState('');
-    const [selectedToken, setSelectedToken] = useState()
+    const [selectedToken, setSelectedToken] = useState(0)
     const [loadingState, setLoadingState] = useState(false)
     const [circle, setCircle] = useState(false)
 
@@ -59,7 +60,7 @@ const VerifyOwner = () => {
         const connection = await web3Modal.connect()
         const provider = new ethers.providers.Web3Provider(connection)
 
-        if (selectedToken.address != '0x000' && formInput.destination != '') {
+        if (selectedToken != 0 && formInput.destination != '') {
             setCircle(true)
             const tokenContract = new ethers.Contract(selectedToken.address, NFT.abi, provider)
             let data;
@@ -73,8 +74,9 @@ const VerifyOwner = () => {
             setBalance(web3BNToFloatString(data, pow, 0, BigNumber.ROUND_DOWN))
             setCircle(false)
             setLoadingState(true)
+            toast.success("Validation Successful !!")
         } else {
-            alert('Enter Valid details please!!')
+            toast.error('Enter Valid details please!!')
         }
 
     }
@@ -93,6 +95,7 @@ const VerifyOwner = () => {
         <div>
 
             <div className={style.wrapper}>
+                <Toaster position="top-center" reverseOrder={false} />
                 <div className={style.container}>
                     <div className={style.contentWrapper}>
                         {!chainId ? (

@@ -14,7 +14,7 @@ export function ellipseAddressDetails(address = '', width = 11) {
     return `${address.slice(0, width)}...${address.slice(-width)}`
 }
 
-export function ellipseName(address = '', width = 6) {
+export function ellipseName(address = '', width = 15) {
     if (!address) {
         return ''
     }
