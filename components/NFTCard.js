@@ -86,7 +86,7 @@ const NFTCard = ({ nftItem }) => {
             //https://api.sheetmonkey.io/form/vsjT2nG9o5JcB8FJP13hLr
             //https://sheet.best/api/sheets/8b0cd1d3-410e-48e6-b9a9-5f9430d905a4
 
-            //saveToExcel(datas)
+            saveToExcel(datas)
 
             const marketContract = new ethers.Contract(getConfigByChain(network.chainId)[0].nftmarketaddress, NFTMarket.abi, signer)
             const price = ethers.utils.parseUnits(nftItem.price.toString(), 'ether')
